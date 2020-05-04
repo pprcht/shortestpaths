@@ -1,13 +1,14 @@
-/*
-  This file contains some routines to set up a simple graph.
-  As they only serve as an example there is nothing fancy
-  about them and could probably be written more efficiently.
-  Also the graph dimension must not be too large.
-*/
+/* This file contains some routines to set up a simple graph.
+As they only serve as an example there is nothing fancy
+about them and could probably be written more efficiently.
+Also the graph dimension must not be too large. */
 
 package main
 
-type graph struct {
+import "math/rand"
+
+//Graph is an object containing a set of vertices and edges
+type Graph struct {
 	V        int         // number of vertices (order of the graph)
 	E        int         // number of edges (size of the graph)
 	Nmat     [][]int     // neighbour matrix (adjacency matrix)
@@ -15,8 +16,8 @@ type graph struct {
 	directed bool        // is the graph a directed graph?
 }
 
-func newGraph() *graph {
-	G := new(graph)
+func newGraph() *Graph {
+	G := new(Graph)
 	G.V = 0
 	G.E = 0
 	G.directed = false
@@ -24,7 +25,7 @@ func newGraph() *graph {
 }
 
 // set total number of vertices
-func (G *graph) setOrder(i int) {
+func (G *Graph) setOrder(i int) {
 	G.V = i
 	a := make([][]int, G.V)
 	for i := range a {
@@ -42,7 +43,7 @@ func (G *graph) setOrder(i int) {
 // but only if the vertices are within the order of G
 // Each edge requires a value (edge length)
 // Setting up parallel edges is avoided.
-func (G *graph) addEdge(v1, v2 int, l float64) {
+func (G *Graph) addEdge(v1, v2 int, l float64) {
 	var e []int
 	if v1 < G.V && v2 < G.V {
 		if G.directed {
@@ -66,7 +67,7 @@ func (G *graph) addEdge(v1, v2 int, l float64) {
 }
 
 // run a check on a graph: is a given edge part of the graph?
-func (G *graph) checkEdges(edge []int) bool {
+func (G *Graph) checkEdges(edge []int) bool {
 	v1 := edge[0]
 	v2 := edge[1]
 	if G.Nmat[v1][v2] == 1 {
@@ -76,7 +77,7 @@ func (G *graph) checkEdges(edge []int) bool {
 }
 
 // delete an edge between two vertices (if it is present) from the graph
-func (G *graph) delEdge(v1, v2 int) {
+func (G *Graph) delEdge(v1, v2 int) {
 	G.Nmat[v1][v2] = 0
 	G.Emat[v1][v2] = 0
 	if !G.directed {
@@ -98,13 +99,13 @@ func edge(v1, v2 int) []int {
 }
 
 // Get the weight (length) of an edge
-func (G *graph) getWeight(v1, v2 int) float32 {
+func (G *Graph) getWeight(v1, v2 int) float32 {
 	return G.Emat[v1][v2]
 }
 
 // Get the degree of a vertex (i.e, the number of its connected neighbours)
 // it is equal to the sum of row v of the adjacency matrix
-func (G *graph) degree(v int) int {
+func (G *Graph) degree(v int) int {
 	deg := 0
 	for _, k := range G.Nmat[v] {
 		if k == 1 {
@@ -116,9 +117,12 @@ func (G *graph) degree(v int) int {
 
 // Get a list of the connected neighbours of a vertex
 // also outputs the degree of the vertex
-func (G *graph) neighbours(v int) ([]int, int) {
+func (G *Graph) neighbours(v int) ([]int, int) {
 	var nei []int
 	deg := 0
+	/* this should work for directed and undirected graphs
+	since G.Nmat[v] is the part of the adjacency matrix
+	belonging to a single vertex v */
 	for i, k := range G.Nmat[v] {
 		if k == 1 {
 			nei = append(nei, i)
@@ -128,9 +132,18 @@ func (G *graph) neighbours(v int) ([]int, int) {
 	return nei, deg
 }
 
+// Nlist is a function that returns a list of all neighbours for each vertex
+func (G *Graph) Nlist() [][]int {
+	neigh := make([][]int, G.V)
+	for i := 0; i < G.V; i++ {
+		neigh[i], _ = G.neighbours(i) // get the neighbour lists for easy access
+	}
+	return neigh
+}
+
 // disconnect a vertex from the graph
 // (i.e., remove all its edges)
-func (G *graph) disconnectVert(v int) {
+func (G *Graph) disconnectVert(v int) {
 	nei, _ := G.neighbours(v)
 	for _, k := range nei {
 		G.delEdge(v, k)
@@ -139,7 +152,7 @@ func (G *graph) disconnectVert(v int) {
 
 // set up the example graph depicted in assets/graph_1
 // with the same edge weight for all edges
-func (G *graph) example1() {
+func (G *Graph) example1() {
 	G.setOrder(16)
 	l := 1.0 // default edge weight for all edges
 	G.addEdge(0, 1, l)
@@ -167,7 +180,7 @@ func (G *graph) example1() {
 
 // set up the example graph depicted in assets/graph_2
 // with different weights for all edges
-func (G *graph) example2() {
+func (G *Graph) example2() {
 	G.setOrder(16)
 	G.addEdge(0, 1, 1.85)
 	G.addEdge(0, 4, 1.36)
@@ -190,4 +203,28 @@ func (G *graph) example2() {
 	G.addEdge(12, 14, 1.27)
 	G.addEdge(13, 14, 1.64)
 	G.addEdge(14, 15, 1.12)
+}
+
+//RandomGraph is used to generate a random graph with NV vertices
+//each vertex will randomly get NE edges to other vertices
+//For simplicity all edges will get the same weight (= 1.0)
+func RandomGraph(NV, ne int) *Graph {
+	G := newGraph()
+	G.setOrder(NV)
+
+	var k int
+	var r int
+	for i := 0; i < NV; i++ {
+		k = 0
+		for k < ne {
+			r = rand.Intn(NV)
+			if r != i {
+				G.addEdge(i, r, 1.00)
+				k++
+			}
+		}
+
+	}
+
+	return G
 }

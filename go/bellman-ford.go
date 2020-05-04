@@ -16,7 +16,7 @@ import (
 )
 
 // a wrapper for the example
-func exampleBellmanFord(G *graph, start, end int) {
+func exampleBellmanFord(G *Graph, start, end int) {
 	// run the algorithm. It will yield all the shortest distances
 	// from the start node to all other vertices.
 	dist, prev := BellmanFord(G, start)
@@ -38,7 +38,7 @@ func exampleBellmanFord(G *graph, start, end int) {
 // BellmanFord is the routine containing the setup and the algorithm
 // for finding the shortest path to ALL vertices from a given
 // starting point.
-func BellmanFord(G *graph, start int) ([]float64, []int) {
+func BellmanFord(G *Graph, start int) ([]float64, []int) {
 	// Initialize the distances.
 	// I.e., this is the total distance from the source to any given point
 	dist := make([]float64, G.V)

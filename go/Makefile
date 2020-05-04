@@ -12,10 +12,16 @@ GOGET := $(GOCMD) get
 all: test build
 
 build:
-	$(GOBUILD) -o $(PROG) -v
+	$(GOBUILD) -o $(PROG) -v 
 
 test:
+	$(GOTEST) fibheap -v
 	$(GOTEST) -v 
+
+# utilize Go's native benchmark/test system
+bench:
+	$(GOTEST) fibheap -v -bench=.
+	$(GOTEST) -v -bench=.
 
 clean:
 	$(GOCMD) clean

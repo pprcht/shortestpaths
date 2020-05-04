@@ -9,7 +9,7 @@ E.g., graphs are saved as adjacency matrices, which is not very memory-efficient
 larger and sparse graphs.
 
 ## Graph Theory
-Graph theory is a field of mathematics. The subject of study are the eponymous *graphs*.
+Graph theory is a field of mathematics. The subject of study are the eponymous *Graphs*.
 In a general sense a graph **G** is an ordered pair *G = (V,E)* composing a set of *vertices* **V** and
 a set of *edges* **E**. A vertex is sometimes also refered to as *node* or *point*.
 An edge is an unordered pair of two vertices and is sometimes also refered to as *link* or *line*.
@@ -34,6 +34,7 @@ Algorithm | Description | source code
 Dijkstra's algorithm | single-source shortest path with non-negative weights | [Go](go/dijkstra.go), [Fortran](fortran/dijkstra.f90)
 Bellman-Ford algorithm | single-source shortest path with arbitrary weights | [Go](go/bellman-ford.go)
 Floyd-Warshall algorithm | all pairs shortest paths | [Go](go/floyd-warshall.go), [Fortran](fortran/floyd-warshall.f90)
+Dijkstra's algorithm (+Fibonacci heap) | Dijkstra's algorithm with better asymptotic scaling | [Go](go/dijkstra-heap.go)
 
 Other algorithms or languages might be added later.
 
@@ -51,3 +52,5 @@ Other dependencies should not be needed.
 
 Examples can be modified/added in the respective `main.*` source files.
 
+For the Go version there are also some [testing and benchmarking routines](go/algos_test.go) to evaluate the speed of each algorithm.
+They can be called with `go test -v -bench=.` or via `make` by `make bench` .

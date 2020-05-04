@@ -10,7 +10,7 @@ import (
 )
 
 // a wrapper for the example
-func exampleDijkstra(G *graph, start, end int) {
+func exampleDijkstra(G *Graph, start, end int) {
 	// run the algorithm. It will yield all the shortest distances
 	// from the start node to all other vertices.
 	dist, prev := Dijkstra(G, start)
@@ -31,7 +31,7 @@ func exampleDijkstra(G *graph, start, end int) {
 // Dijkstra is the routine containing the setup and the algorithm
 // for finding the shortest path to ALL vertices from a given
 // starting point.
-func Dijkstra(G *graph, start int) ([]float64, []int) {
+func Dijkstra(G *Graph, start int) ([]float64, []int) {
 	// Initialize the distances.
 	// I.e., this is the total distance from the source to any given point
 	dist := make([]float64, G.V)
@@ -40,14 +40,13 @@ func Dijkstra(G *graph, start int) ([]float64, []int) {
 	prev := make([]int, G.V)
 	// Initialize the list of unvisited vertices.
 	Q := make([]int, G.V)
-	// Initialize neighbour lists for all vertices.
-	neigh := make([][]int, G.V)
+	// Initialize neighbour lists for all vertices (for easy access later).
+	neigh := G.Nlist() // get the neighbour lists for easy access
 	// Initialize data
 	for i := 0; i < G.V; i++ {
-		dist[i] = math.Inf(0)         // set distance to vertex i to "infinity"
-		prev[i] = -1                  // set predecessor of vertex i to "undefined"
-		Q[i] = i                      // add the vertex to the queue
-		neigh[i], _ = G.neighbours(i) // get the neighbour lists for easy access
+		dist[i] = math.Inf(0) // set distance to vertex i to "infinity"
+		prev[i] = -1          // set predecessor of vertex i to "undefined"
+		Q[i] = i              // add the vertex to the queue
 	}
 	dist[start] = 0.0   // set distance of the source vertex to 0
 	prev[start] = start // set the predecessor of the source to itself

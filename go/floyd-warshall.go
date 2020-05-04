@@ -11,7 +11,7 @@ import (
 )
 
 // a wrapper for the actual routine call
-func exampleFloydWarshall(G *graph, start, end int) {
+func exampleFloydWarshall(G *Graph, start, end int) {
 
 	dist, prev := FloydWarshall(G)
 	fmt.Println("shortest path from vertex", start, "to vertex", end, ":")
@@ -28,7 +28,7 @@ func exampleFloydWarshall(G *graph, start, end int) {
 }
 
 // FloydWarshall is the implementation of the Floyd-Warshall algorithm
-func FloydWarshall(G *graph) ([][]float64, [][]int) {
+func FloydWarshall(G *Graph) ([][]float64, [][]int) {
 
 	// The algorithm requires a V x V distance matrix
 	// with all the edge weights.
